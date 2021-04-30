@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Tangerine&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        outline: none;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      h1 {
+        margin-top: 2rem;
+        color: #FFD700;
+        margin-bottom: 56px;
+        text-align: center;
+        font-family: 'Tangerine', sans-serif;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 40px;
+      }
+    
+      button {
+        background: #FFD700;
+        border: none;
+        height: 42px;
+        outline: none;
+        color: #fff;
+        border-radius: 3px;
+        margin-top: 32px;
+        cursor: pointer;
+        font-family: 'Tangerine', sans-serif;
+        font-size: 36px;
+        background-image: url("../assets/gold_texture.jpg");
+      }
+    
+      div.container {
+        display: flex; 
+        flex-direction: column;
+        align-items: center; 
+        justify-content: center; 
+        height: 100vh;
+        background: url(/assets/chat_background.png);
+      }
+      img {
+        width: 40%;
+        height: 40%;
+      }
+
+      div > div {
+        display: flex; 
+        flex-direction: column;
+        align-items: center; 
+        justify-content: center; 
+        width: 30%;
+        padding: 24px;
+        border-radius: 3px;
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+      }
+    
+      form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+    
+      input {
+        width: 100%;
+        border: 0;
+        background: #f5f5f5;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        height: 42px;
+        border-radius: 3px;
+        padding: 2px 8px;
+      }
+
+      #input-chatroom {
+        margin-bottom: 24px;
+      }
+
+      label {
+        margin-bottom: 16px;
+        font-family: 'Tangerine', sans-serif;
+        font-size: 36px;
+        font-weight: 400;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <audio id="audio" src="../assets/vivaldi.mp3" autoplay="true" loop="true" ></audio> 
+      <div>
+          <img id="img" src="../assets/icon.png" alt="Icon">
+          <h1>WhatsApp Premium Deluxe Edition™</h1>
+          <form id="form" action="/chat.html" method="GET">
+            <label id="label" for="input-chatroom">Room</label>
+            <input id="input-chatroom" class="input" type="text" name="chatname" autocomplete="off" required />
+            
+            <label id="label" for="input-name">Name</label>
+            <input id="input-name" class="input" type="text" name="username" autocomplete="off" required />
+            
+            <button id="button" type="submit">Join</button>
+          </form>
+        </div>
+    </div>
+  </body>
+</html>
