@@ -4,6 +4,13 @@
   box-sizing: border-box;
   outline: none;
 }
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
 button {
   cursor: pointer;
 }
@@ -11,7 +18,8 @@ body {
   padding-top: 80px;
   margin: 0;
   padding-bottom: 3rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
   background: url(/assets/chat_background.png);
 }
 
@@ -67,12 +75,25 @@ header > button > img {
   height: 32px;
 }
 
+main {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+main > section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
 a.back {
-   border: 0;
-   background: transparent;
-   font-size: 32px;
-   color: #999999;
-   text-decoration: none;
+  border: 0;
+  background: transparent;
+  font-size: 32px;
+  color: #999999;
+  text-decoration: none;
 }
 
 a.back > img {
@@ -92,7 +113,7 @@ a.back > img {
 }
 
 #messages > li > .not-from-user {
-  box-shadow: 0px 3px 2px 0px rgba(0,0,0,0.21);
+  box-shadow: 0px 3px 2px 0px rgba(0, 0, 0, 0.21);
   position: relative;
   padding: 0.5rem 1rem;
   margin-left: 10px;
@@ -104,21 +125,22 @@ a.back > img {
   overflow-wrap: break-word;
 }
 
-#messages > li:not(li.not-from-user + li.not-from-user) > .not-from-user::after {
+#messages
+  > li:not(li.not-from-user + li.not-from-user)
+  > .not-from-user::after {
   content: '';
   position: absolute;
   left: -10px;
   top: 0;
-  width: 0; 
-  height: 0; 
-  border-bottom: 20px solid transparent; 
-  
+  width: 0;
+  height: 0;
+  border-bottom: 20px solid transparent;
+
   border-right: 20px solid #fff;
 }
 
-
 #messages > li > .from-user {
-  box-shadow: 0px 3px 2px 0px rgba(0,0,0,0.21);
+  box-shadow: 0px 3px 2px 0px rgba(0, 0, 0, 0.21);
   position: relative;
   padding: 0.5rem 1rem;
   margin-right: 10px;
@@ -137,11 +159,11 @@ a.back > img {
   left: auto;
   right: -10px !important;
   top: 0;
-  width: 0; 
-  height: 0; 
-  border-bottom: 20px solid transparent; 
+  width: 0;
+  height: 0;
+  border-bottom: 20px solid transparent;
   border-right: 0;
-  border-left: 20px solid #DCF8C6 !important;
+  border-left: 20px solid #dcf8c6 !important;
 }
 
 #messages > li > div {
@@ -187,7 +209,7 @@ a.back > img {
   left: 0;
   right: 0;
   height: 20%;
-  background: linear-gradient(360deg, rgba(0,0,0,0.50), transparent);
+  background: linear-gradient(360deg, rgba(0, 0, 0, 0.5), transparent);
   border-radius: 0 0 6px 6px;
   pointer-events: none;
 }
@@ -216,7 +238,7 @@ a.back > img {
 }
 
 #form {
-  background: #F0F0F0;
+  background: #f0f0f0;
   padding: 0.25rem;
   position: fixed;
   bottom: 0;
@@ -283,7 +305,7 @@ a.back > img {
   margin: 0.25rem;
   outline: none;
   color: #fff;
-  transition: background .3s ease;
+  transition: background 0.3s ease;
 }
 
 #form > button > img {
@@ -291,3 +313,14 @@ a.back > img {
   width: 32px;
 }
 
+main > aside {
+  width: 300px;
+  height: 100%;
+}
+
+#logged-users {
+  width: 100%;
+  height: 100%;
+  background: #ededed;
+  overflow-y: auto;
+}

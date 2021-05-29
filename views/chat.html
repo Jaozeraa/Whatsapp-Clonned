@@ -1,60 +1,68 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= chatname %> || WhatsApp 2.0</title>
-    <link rel="stylesheet" href="/assets/styles/chat.css">
+    <title><%= chatname %> || WhatsApp Web</title>
+    <link rel="stylesheet" href="/assets/styles/chat.css" />
   </head>
   <body>
     <header>
       <a href="/" class="back">
-        <img src="/assets/chevron-left.svg" alt="Voltar">
+        <img src="/assets/chevron-left.svg" alt="Voltar" />
       </a>
-      <img src="/assets/avatar.svg" alt="FakeUser">
+      <img src="/assets/avatar.svg" alt="FakeUser" />
       <div>
         <h1><%= chatname %></h1>
         <p id="is_someone_typing">‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‏‏‎ ‎‎</p>
       </div>
       <button>
-        <img src="/assets/more-vertical.svg" alt="Mais">
+        <img src="/assets/more-vertical.svg" alt="Mais" />
       </button>
     </header>
-    <ul id="messages"></ul>
-    <form id="form" action="">
-      <div class="buttons-row">
-        <button type="button" id="switch-between-camera">
-          <img src="assets/smile.svg" alt="Adicionar emojis" />
-        </button>
+    <main>
+      <section>
+        <ul id="messages"></ul>
+        <form id="form" action="">
+          <div class="buttons-row">
+            <button type="button" id="switch-between-camera">
+              <img src="assets/smile.svg" alt="Adicionar emojis" />
+            </button>
 
-        <label for="image-file-input">
-          <input type="file" id="image-file-input">
-          <img src="assets/paperclip.svg" alt="Adicionar arquivo" />
-        </label>
-      </div>
+            <label for="image-file-input">
+              <input type="file" id="image-file-input" />
+              <img src="assets/paperclip.svg" alt="Adicionar arquivo" />
+            </label>
+          </div>
 
-      <input id="input" autocomplete="off" placeholder="Type a message"/>
+          <input id="input" autocomplete="off" placeholder="Type a message" />
 
-      <button type="submit">
-        <img src="assets/send.svg" alt="Enviar" />
-      </button>
-    </form>
+          <button type="submit">
+            <img src="assets/send.svg" alt="Enviar" />
+          </button>
+        </form>
+      </section>
+      <aside>
+        <ul id="logged-users"></ul>
+      </aside>
+    </main>
     <div id="videos"></div>
     <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io();
       const audio = new Audio('/assets/notification_sound.mp3');
-      
+
       let timeout;
       let isTyping = false;
       const ENTER_KEY_CODE = 13;
-      const chatname = "<%= chatname %>";
-      const username = "<%= username %>";
+      const chatname = '<%= chatname %>';
+      const username = '<%= username %>';
       const messages = document.getElementById('messages');
       const form = document.getElementById('form');
       const input = document.getElementById('input');
       const imageFileInput = document.getElementById('image-file-input');
+      const loggedUsers = document.querySelector('#logged-users');
+      let connectedUsers = [];
 
-      
       function timeoutFunction() {
         isTyping = false;
         socket.emit('no longer typing message', { name: username, chatname });
@@ -73,40 +81,74 @@
           chatname,
         });
       });
-      
+
       input.addEventListener('keydown', e => {
         if (e.keyCode === ENTER_KEY_CODE) return;
 
         if (isTyping === false) {
           isTyping = true;
-          socket.emit('typing message', { chatname, name:username });
+          socket.emit('typing message', { chatname, name: username });
           timeout = setTimeout(timeoutFunction, 2000);
         } else {
           clearTimeout(timeout);
           timeout = setTimeout(timeoutFunction, 2000);
         }
-
       });
 
-      form.addEventListener('submit', e  => {
+      form.addEventListener('submit', e => {
         e.preventDefault();
         if (input.value) {
           const date = new Date();
 
-          const time = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+          const time = `${String(date.getHours()).padStart(2, '0')}:${String(
+            date.getMinutes(),
+          ).padStart(2, '0')}`;
 
           addMessage({ message: input.value, name: username, time });
 
           isTyping = false;
 
-          socket.emit('chat message', { message: input.value, name: username, chatname });
+          socket.emit('chat message', {
+            message: input.value,
+            name: username,
+            chatname,
+          });
 
           input.value = '';
         }
       });
 
       socket.on('connect', () => {
-        socket.emit('join chat', chatname)
+        socket.emit('join chat', { chatname, name: username });
+      });
+
+      socket.on('invalid session', () => {
+        window.location = '/';
+        alert('Esse nome de usuário já está em uso.');
+      });
+
+      socket.on('join chat', chat => {
+        connectedUsers = chat.connectedUsers;
+
+        loggedUsers.innerHTML = '';
+
+        connectedUsers.forEach(user => {
+          const el = document.createElement('p');
+          el.innerHTML = user;
+          loggedUsers.appendChild(el);
+        });
+      });
+
+      socket.on('disconnect', ({ name }) => {
+        const users = connectedUsers.filter(user => user !== name);
+
+        loggedUsers.innerHTML = '';
+
+        connectedUsers.forEach(user => {
+          const el = document.createElement('p');
+          el.innerHTML = user;
+          loggedUsers.appendChild(el);
+        });
       });
 
       socket.on('chat message image', ({ name, file, time, type }) => {
@@ -123,7 +165,8 @@
 
       socket.on('chat message', ({ name, message, time }) => {
         if (name === username) return;
-
+        audio.pause();
+        audio.currentTime = 0;
         audio.play();
 
         addMessage({ name, message, time });
@@ -131,7 +174,9 @@
 
       socket.on('typing message', ({ name }) => {
         // if (name === username) return;
-        document.getElementById('is_someone_typing').innerText = `${name} is typing...`;
+        document.getElementById(
+          'is_someone_typing',
+        ).innerText = `${name} is typing...`;
       });
 
       socket.on('no longer typing message', ({ name }) => {
@@ -141,7 +186,7 @@
 
       function addMessage({ name, message, time }) {
         const item = document.createElement('li');
-        
+
         item.classList.add(name === username ? 'from-user' : 'not-from-user');
 
         item.innerHTML = `
@@ -157,14 +202,18 @@
 
       function addImageMessage({ name, file, time, type }) {
         const item = document.createElement('li');
-        
+
         item.classList.add(name === username ? 'from-user' : 'not-from-user');
 
         item.innerHTML = `
           <div class="${name === username ? 'from-user' : 'not-from-user'}">
             <label>${name === username ? '' : `${name}`}</label>
             <div class="image-container">
-              ${type === 'video/mp4' ? `<video src="${file}" type="${type}" controls>` : `<img src="${file}" alt="received message">`}
+              ${
+                type === 'video/mp4'
+                  ? `<video src="${file}" type="${type}" controls>`
+                  : `<img src="${file}" alt="received message">`
+              }
             </div>
             <span>${time}</span>
           </div>`;
@@ -172,7 +221,7 @@
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       }
-/* 
+      /* 
       const videos = document.getElementById('videos');
       const currentVideo = document.createElement('video');
       currentVideo.muted = true;
